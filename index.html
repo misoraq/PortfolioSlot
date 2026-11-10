@@ -277,6 +277,9 @@
   .data-grid div{border:2px solid var(--ink);border-radius:10px;padding:10px 12px;background:#fff}
   .data-grid dt{font-size:11px;font-weight:700;color:#8a5a3a;letter-spacing:.08em}
   .data-grid dd{font-size:14px;font-weight:700;line-height:1.6;margin-top:2px}
+  .role-list{list-style:none;display:grid;gap:8px;max-width:720px}
+  .role-list li{position:relative;padding:10px 14px 10px 34px;background:#fff;border:2px solid var(--ink);border-radius:10px;font-size:14px;line-height:1.7}
+  .role-list li::before{content:"";position:absolute;left:13px;top:17px;width:9px;height:9px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 0 1.5px var(--ink)}
   .points{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
   .points div{border:2px solid var(--ink);border-radius:12px;padding:14px 16px;background:#fff}
   .points b{display:block;font-size:15px;margin-bottom:4px}
@@ -530,6 +533,7 @@
    platform    : 対応機種　　team : 制作（個人制作／チーム制作 など）
    cardGenre   : 一覧カードに出す短いジャンル（空なら genre を使います）
    tools       : エンジン・使用ツール　　role : 担当　　period : 制作期間
+   roleDetail  : 「担当したところ」の箇条書き ["担当した内容", ...]（role は作品データ用の短い言葉）
    points      : 見どころ [{title:"見出し", text:"説明"}, ...]
    video       : プレイ動画。YouTube の URL（https://youtu.be/xxxx など）か、動画ファイル（"images/xxx.mp4"）
    screenshots : スクリーンショット ["images/xxx.jpg", ...]
@@ -541,10 +545,16 @@ const WORKS = [
     symbol:"7", color:"#e0283f",
     icon:"images/sym-canvas.png",
     title:"キャンバスシティ", genre:"3D街づくり・シミュレーション", cardGenre:"3D街づくり", year:"",
-    tools:"Unity", role:"（担当した部分を書く）", period:"",
+    tools:"Unity", role:"NPCの動き（AI・挙動）", period:"",
     catch:"絵の具で、何もない島に街を描く。",
     video:"",   // ← YouTube の URL を入れると詳細画面に動画が出ます
     about:"舞台は立方体の形をした浮遊島。島を90度ずつ回転させながら各面を探索し、見つけた絵の具を使って、住民の依頼にこたえながら自分だけの街を育てていく。",
+    roleDetail:[
+      "NPCがマップ上を歩き回る基本動作",
+      "建物が設置されるとNPCがそこへ向かい、建物ごとのアニメーション再生と同時にお金・幸福度が増える仕組み",
+      "NPCの疲労度の蓄積と、たまったときの処理",
+      "ゲーム内の朝・夜に合わせたNPCの動きの切り替え"
+    ],
     platform:"PC", team:"チーム制作",
     points:[
       {title:"回転する立方体の島", text:"島を上下左右に回して、建物・住民・絵の具・ギミックのある面を探す。"},
@@ -562,10 +572,15 @@ const WORKS = [
     symbol:"BAR", color:"#1b1112",
     icon:"images/sym-disaster.png",
     title:"DISASTER on the GRID", genre:"パズル脱出（協力プレイ）", cardGenre:"パズル脱出", year:"",
-    tools:"Unity / C#", role:"（担当した部分を書く）", period:"",
+    tools:"Unity / C#", role:"ギミック・サウンド", period:"",
     catch:"ふたつの視点で、脱出しろ。",
     video:"https://youtu.be/ExeZcQVciis",   // ← YouTube の URL を入れると詳細画面に動画が出ます
     about:"プレイヤーとクリエイターに分かれ、協力しながら攻略するパズル脱出ゲーム。異なる視点と役割を活かした協力プレイで、ひとりでは解けない仕掛けを乗りこえていく。",
+    roleDetail:[
+      "クリックでプレイヤーを飛ばせる大砲システム",
+      "足場を踏むと、足場のマスが出現する機能",
+      "ゲーム全体の効果音・BGMの追加"
+    ],
     platform:"PC（Windows）", team:"チーム制作",
     points:[
       {title:"プレイヤーとクリエイター", text:"ふたりが別々の役割を受け持ち、それぞれの視点から脱出の手がかりを探す。"},
@@ -952,6 +967,7 @@ function openModal(i){
   document.getElementById("mBody").innerHTML =
     sec("どんなゲーム？", about ? `<p class="about">${esc(about)}</p>` : "") +
     sec("作品データ", data ? `<dl class="data-grid">${data}</dl>` : "") +
+    sec("担当したところ", (w.roleDetail||[]).length ? `<ul class="role-list">${w.roleDetail.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>` : "") +
     sec("見どころ", points ? `<div class="points">${points}</div>` : "") +
     sec("ゲーム画面", (video || shotsHTML) ? video + (shotsHTML ? `<div class="shots">${shotsHTML}</div>` : "") : "") +
     (links ? `<div class="sheet-actions">${links}</div>` : "");
