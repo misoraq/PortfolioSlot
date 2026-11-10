@@ -519,6 +519,8 @@
    image  : 一覧カードの画像（正方形）。空ならダミー表示
    shot   : 作品詳細の横長画像（16:9）。空なら image を使います
    links  : ボタン（label と url）。sub:true で黒いボタン
+            ゲームの zip は GitHub の Releases（タグ名 games）に添付し、
+            url:"https://github.com/misoraq/PortfolioSlot/releases/download/games/ファイル名.zip" と書きます
    icon   : 出目に使う画像（入れると symbol の文字の代わりに表示）。iconStyle:"card" で白フチ付き
    status : "開発中" と書くと一覧・詳細に「開発中」の印が付きます
 
@@ -554,7 +556,7 @@ const WORKS = [
       {src:"images/canvas-city-wide.jpg", caption:"タイトル画面"}
     ],
     desc:"立方体の浮遊島を回転させながら探索し、絵の具で住民の依頼にこたえて自分だけの街を育てる3D街づくりゲーム。",
-    image:"images/canvas-city.jpg", shot:"images/canvas-city-wide.jpg", links:[{label:"ダウンロード", url:"#"},{label:"動画を見る", url:"#", sub:true}]
+    image:"images/canvas-city.jpg", shot:"images/canvas-city-wide.jpg", links:[{label:"ダウンロード（Windows版・約170MB）", url:"https://github.com/misoraq/PortfolioSlot/releases/download/games/CanvasCity.zip"},{label:"動画を見る", url:"#", sub:true}]
   },
   {
     symbol:"BAR", color:"#1b1112",
@@ -575,7 +577,7 @@ const WORKS = [
       "images/disaster-ss3.jpg"
     ],
     desc:"プレイヤーとクリエイターに分かれ、協力しながら攻略するパズル脱出ゲーム。",
-    image:"images/disaster-on-the-grid.jpg", shot:"images/disaster-on-the-grid-wide.jpg", links:[{label:"ダウンロード", url:"#"},{label:"動画を見る", url:"#", sub:true}]
+    image:"images/disaster-on-the-grid.jpg", shot:"images/disaster-on-the-grid-wide.jpg", links:[{label:"ダウンロード（Windows版・約40MB）", url:"https://github.com/misoraq/PortfolioSlot/releases/download/games/Disaster_on_the_Grid.zip"},{label:"動画を見る", url:"#", sub:true}]
   },
   {
     symbol:"★", color:"#e0a10b",
@@ -940,7 +942,11 @@ function openModal(i){
     : "";   // スクショが無ければ何も出さない
   const video = videoHTML(w.video, w.title);   // URL が空なら動画の枠は出さない
   // 詳細画面の一番下はダウンロード（黒いサブボタン以外）だけ
-  const links = (w.links||[]).filter(l=>!l.sub).map(l=>`<a href="${l.url}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join("")
+  const links = (w.links||[]).filter(l=>!l.sub).map(l=>
+      /\/releases\/download\/|^downloads\//.test(l.url)
+        ? `<a href="${l.url}" download>${esc(l.label)}</a>`                       // zip などのファイル → その場でダウンロード
+        : `<a href="${l.url}" target="_blank" rel="noopener">${esc(l.label)}</a>` // 普通のページ → 新しいタブ
+    ).join("")
     || `<span class="soon">ダウンロード準備中</span>`;   // リンクが無い作品（開発中など）
 
   document.getElementById("mBody").innerHTML =
