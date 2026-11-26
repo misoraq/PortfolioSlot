@@ -18,7 +18,7 @@
     --ink:#1b1112;
     --neon:#ff3d6e;
     --muted:#d9b98a;
-    --h:84px; /* リール1コマの高さ */
+    --h:104px; /* リール1コマの高さ */
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
@@ -132,8 +132,20 @@
   .pi-body .g{font-size:11px;color:#c9a35a}
 
   /* ===== リール＋詳細 ===== */
-  .play-row{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:26px;align-items:start}
-  .reel-col{} /* スクロールに付いてこないよう固定はしない */
+  /* リールのバー（看板と PAY TABLE の間） */
+  .reel-bar{display:grid;grid-template-columns:1fr 290px;gap:22px;align-items:center}
+  .reel-bar .reels{cursor:pointer}
+  .reel-bar .reels:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+  .bar-side{display:flex;flex-direction:column;gap:12px;align-items:stretch}
+  .bar-side .meter{margin-bottom:0}
+  .bar-side .controls{margin-top:0}
+  .bar-side .more{align-self:center;font-weight:700;font-size:14px;padding:9px 22px;border-radius:999px;background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #5c3f05}
+  .bar-side .more:active{transform:translateY(3px);box-shadow:0 1px 0 #5c3f05}
+  .bar-hint{margin:12px 0 26px}
+  .selected{margin-top:4px}
+  .selected .ticket{display:grid;grid-template-columns:1.6fr 1fr;align-items:stretch}
+  .selected .ticket .shot{height:100%;min-height:100%}
+  .selected .ticket .info{border-top:none;border-left:3px dashed rgba(0,0,0,.18);display:flex;flex-direction:column;justify-content:center}
 
   .meter{
     display:flex;justify-content:space-between;align-items:center;
@@ -145,12 +157,12 @@
   .reels-frame{background:linear-gradient(180deg,#d9a52c,#8a5d0c);padding:8px;border-radius:14px;box-shadow:inset 0 3px 6px rgba(0,0,0,.5)}
   .reels{display:flex;gap:6px;background:#120204;padding:6px;border-radius:8px;position:relative}
   .reel{
-    flex:1;height:calc(var(--h) * 3);overflow:hidden;position:relative;border-radius:5px;
+    flex:1;height:var(--h);overflow:hidden;position:relative;border-radius:5px;   /* 1コマだけ見せる */
     background:linear-gradient(180deg,#d8cfbf 0%,#fffaf0 28%,#fffaf0 72%,#d8cfbf 100%);
   }
   .reel::after{
     content:"";position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 26%,transparent 74%,rgba(0,0,0,.55) 100%);
+    background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,transparent 22%,transparent 78%,rgba(0,0,0,.35) 100%);
   }
   .strip{will-change:transform}
   .sym{height:var(--h);display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:1px dashed rgba(0,0,0,.08)}
@@ -241,6 +253,19 @@
     background:var(--cream);color:var(--ink);border:2px solid var(--ink);border-radius:999px;
     padding:6px 16px;font-weight:700;font-size:14px;box-shadow:0 4px 0 var(--red)
   }
+  /* 詳細画面の左右の矢印（前後の作品へ切り替え） */
+  .sheet-nav{
+    position:fixed;top:50%;z-index:110;transform:translateY(-50%);
+    width:54px;height:54px;border-radius:50%;font-size:20px;color:var(--ink);
+    background:radial-gradient(circle at 35% 30%,#fff3c4,var(--gold) 45%,var(--gold-dark));
+    box-shadow:0 5px 0 #5c3f05,0 8px 18px rgba(0,0,0,.5);transition:transform .08s,box-shadow .08s
+  }
+  .sheet-nav:active{transform:translateY(calc(-50% + 4px));box-shadow:0 1px 0 #5c3f05}
+  .sheet-nav.prev{left:max(12px, calc(50% - 440px - 80px))}
+  .sheet-nav.next{right:max(12px, calc(50% - 440px - 80px))}
+  @media (max-width:1060px){ .sheet-nav{width:44px;height:44px;font-size:16px;opacity:.92} }
+  /* スマホでは本文に重ならないよう画面の下に置く */
+  @media (max-width:600px){ .sheet-nav{top:auto;bottom:16px;transform:none} .sheet-nav:active{transform:translateY(3px)} .sheet-nav.prev{left:16px} .sheet-nav.next{right:16px} }
   .close-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--red)}
   .sheet-hero{aspect-ratio:16/9;width:100%;position:relative;background:#2b0509;overflow:hidden}
   .sheet-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -280,6 +305,34 @@
   .role-list{list-style:none;display:grid;gap:8px;max-width:720px}
   .role-list li{position:relative;padding:10px 14px 10px 34px;background:#fff;border:2px solid var(--ink);border-radius:10px;font-size:14px;line-height:1.7}
   .role-list li::before{content:"";position:absolute;left:13px;top:17px;width:9px;height:9px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 0 1.5px var(--ink)}
+  .struggle p{font-size:14px;line-height:1.9;max-width:720px;margin-bottom:10px}
+  .struggle ul{list-style:none;display:grid;gap:6px;max-width:720px}
+  .struggle li{position:relative;padding-left:20px;font-size:14px;line-height:1.8}
+  .struggle li::before{content:"";position:absolute;left:4px;top:.75em;width:7px;height:7px;border-radius:50%;background:var(--red)}
+  /* 開発での課題と解決 */
+  .cases-intro{font-size:14px;line-height:1.95;max-width:760px;margin-bottom:18px;padding:14px 18px;background:#fff;border-left:5px solid var(--red);border-radius:0 10px 10px 0}
+  .case{border:2px solid var(--ink);border-radius:14px;background:#fff;overflow:hidden;margin-bottom:14px}
+  .case-head{display:flex;align-items:center;gap:12px;padding:12px 18px;background:var(--ink);color:var(--cream)}
+  .case-head .num{font-family:"Bungee",sans-serif;font-size:20px;color:var(--gold);line-height:1}
+  .case-head h4{font-size:16px;font-weight:700}
+  .case dl{display:grid;grid-template-columns:118px 1fr}
+  .case dt,.case dd{padding:12px 16px;border-top:1px solid rgba(0,0,0,.1);font-size:14px;line-height:1.8}
+  .case dl > :nth-child(1),.case dl > :nth-child(2){border-top:none}
+  .case dt{font-weight:700;font-size:13px;white-space:nowrap;display:flex;align-items:flex-start;gap:6px;background:#fdf6e3}
+  .case dt::before{content:"";flex:none;width:8px;height:8px;margin-top:7px;border-radius:2px;background:var(--k)}
+  .case dt.k-problem{--k:#8a8a8a}.case dt.k-solution{--k:var(--red)}.case dt.k-ideaResult{--k:#2e8b57}
+  .minor-title{font-weight:700;font-size:14px;margin:22px 0 10px;color:#5a3a2a}
+  .minor{display:grid;gap:8px}
+  .minor div{border:1.5px dashed #c9a35a;border-radius:10px;padding:10px 14px;background:#fffaf0}
+  .minor b{display:block;font-size:14px;margin-bottom:4px}
+  .minor b span{font-family:"Bungee",sans-serif;color:var(--red);margin-right:8px}
+  .minor p{font-size:13px;line-height:1.8;color:#3a2a2a}
+  .minor p em{font-style:normal;font-weight:700;margin-right:6px}
+  @media (max-width:600px){
+    .case dl{grid-template-columns:1fr}
+    .case dt{padding-bottom:2px;border-top:1px solid rgba(0,0,0,.1)}
+    .case dd{border-top:none;padding-top:4px}
+  }
   .points{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
   .points div{border:2px solid var(--ink);border-radius:12px;padding:14px 16px;background:#fff}
   .points b{display:block;font-size:15px;margin-bottom:4px}
@@ -371,8 +424,10 @@
   @media (max-width:1260px){ .lever{display:none} }
   @media (max-width:860px){
     .paytable{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .play-row{grid-template-columns:minmax(0,1fr)}
-    .reel-col{max-width:440px;width:100%;margin:0 auto}
+    .reel-bar{grid-template-columns:minmax(0,1fr);gap:14px}
+    .selected .ticket{grid-template-columns:minmax(0,1fr)}
+    .selected .ticket .shot{height:auto}
+    .selected .ticket .info{border-left:none;border-top:3px dashed rgba(0,0,0,.18)}
   }
   @media (max-width:600px){
     :root{--h:72px}
@@ -389,7 +444,7 @@
     .avatar{margin:0 auto;width:130px;height:130px;font-size:40px}
     .skills{justify-content:center}
   }
-  #works,#profile,#contact,#reelCol,#playRow,#ticket{scroll-margin-top:16px}
+  #works,#profile,#contact,#reelBar,#ticket{scroll-margin-top:16px}
   @media (prefers-reduced-motion:reduce){
     .spinning .bulb{animation:none}
     .ticket.print{animation:none}
@@ -426,30 +481,35 @@
         <div class="bulb-row"></div>
       </div>
 
-      <section id="works">
-        <h2 class="panel-label">PAY TABLE <small>作品一覧 ― 揃い目がリールの出目です</small></h2>
-        <div class="paytable" id="paytable"></div>
-      </section>
-
-      <div class="play-row" id="playRow">
-        <div class="reel-col" id="reelCol">
-          <div class="meter"><span>NOW SHOWING</span><b id="nowNo">01 / 05</b></div>
-          <div class="reels-frame">
-            <div class="reels">
-              <div class="reel"><div class="strip"></div></div>
-              <div class="reel"><div class="strip"></div></div>
-              <div class="reel"><div class="strip"></div></div>
-              <div class="payline" id="payline"></div>
-            </div>
+      <!-- ===== リール（1コマ表示のバー） ===== -->
+      <div class="reel-bar" id="reelBar">
+        <div class="reels-frame">
+          <div class="reels" id="reelsWin" role="button" tabindex="0" aria-label="止まっている作品の詳細を見る">
+            <div class="reel"><div class="strip"></div></div>
+            <div class="reel"><div class="strip"></div></div>
+            <div class="reel"><div class="strip"></div></div>
+            <div class="payline" id="payline"></div>
           </div>
+        </div>
+        <div class="bar-side">
+          <div class="meter"><span>NOW SHOWING</span><b id="nowNo">01 / 08</b></div>
           <div class="controls">
             <button class="step-btn" id="prevBtn" aria-label="前の作品">◀</button>
             <button class="spin-btn" id="spinBtn">SPIN</button>
             <button class="step-btn" id="nextBtn" aria-label="次の作品">▶</button>
           </div>
-          <p class="hint">SPIN・レバーでランダム ／ ◀ ▶ で順番に（Space・←→キーも可）</p>
         </div>
+      </div>
+      <p class="hint bar-hint">SPIN・レバーで作品を抽選 ／ ◀ ▶ で切り替え ／ リールか「詳しく見る」で詳細へ（Space・←→キーも可）</p>
 
+      <section id="works">
+        <h2 class="panel-label">PAY TABLE <small>作品一覧 ― 揃い目がリールの出目です</small></h2>
+        <div class="paytable" id="paytable"></div>
+      </section>
+
+      <!-- ===== 選ばれている作品（詳しく見る前の欄） ===== -->
+      <section class="selected">
+        <h2 class="panel-label">SELECTED <small>リールで選ばれている作品</small></h2>
         <article class="ticket" id="ticket" aria-live="polite">
           <div class="shot" id="shot"></div>
           <div class="info">
@@ -461,7 +521,8 @@
             <div class="links" id="dLinks"></div>
           </div>
         </article>
-      </div>
+      </section>
+
     </div>
 
     <div class="lever" id="lever" aria-hidden="true">
@@ -502,6 +563,8 @@
 <!-- ===== 作品詳細画面（作品を選ぶと開く） ===== -->
 <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
   <button class="close-btn" id="closeBtn">✕ とじる</button>
+  <button class="sheet-nav prev" id="mPrev" type="button" aria-label="前の作品の詳細">◀</button>
+  <button class="sheet-nav next" id="mNext" type="button" aria-label="次の作品の詳細">▶</button>
   <article class="sheet" id="sheet">
     <div class="sheet-hero" id="mHero"></div>
     <header class="sheet-head">
@@ -534,6 +597,9 @@
    cardGenre   : 一覧カードに出す短いジャンル（空なら genre を使います）
    tools       : エンジン・使用ツール　　role : 担当　　period : 制作期間
    roleDetail  : 「担当したところ」の箇条書き ["担当した内容", ...]（role は作品データ用の短い言葉）
+   struggle    : 「苦労した点」の説明文　　struggles : その下に並べる具体的な点 ["...", ...]
+   cases       : 「開発での課題と解決」のメイン項目 [{no, title, problem, solution, ideaResult}, ...]
+   minorCases  : 同じ欄の下に並べる短い項目 [{no, title, problem, fix}, ...]　　casesIntro : 欄のはじめの文
    points      : 見どころ [{title:"見出し", text:"説明"}, ...]
    video       : プレイ動画。YouTube の URL（https://youtu.be/xxxx など）か、動画ファイル（"images/xxx.mp4"）
    screenshots : スクリーンショット ["images/xxx.jpg", ...]
@@ -550,10 +616,42 @@ const WORKS = [
     video:"",   // ← YouTube の URL を入れると詳細画面に動画が出ます
     about:"舞台は立方体の形をした浮遊島。島を90度ずつ回転させながら各面を探索し、見つけた絵の具を使って、住民の依頼にこたえながら自分だけの街を育てていく。",
     roleDetail:[
-      "NPCの基本動作を実装し、島の面を移動しながらマップ上を歩き回れるようにしました。",
+      "NavMeshAgentを使ってNPCの基本動作を実装し、島の面を移動しながらマップ上を歩き回れるようにしました。",
       "建物が設置された際にNPCがその建物へ向かい、建物固有のアニメーションの再生と、同時にお金と幸福度が増加する仕組みを実装しました。",
-      "NPCの疲労度の蓄積と、疲労度がたまった際の処理を実装しました。",
-      "ゲーム内の朝・夜に応じたNPCの動きを実装しました。"
+      "仕事・休憩・睡眠・帰宅といったNPCの行動を管理し、ゲーム内の朝・夜に合わせて生活のサイクルが回るようにしました。",
+      "NPCの疲労度を蓄積させ、最大までたまったら家に帰る処理を実装しました。",
+      "ゴミを投げる、釣りをするなど、NPCごとの個別のアクションを追加しました。",
+      "Mixamoのアニメーションを使い、NPCの動きとアニメーションを連動させました。"
+    ],
+    casesIntro:"NPCの帰宅・睡眠・疲労・移動・UIなど、複数のシステムが連携する中で、お互いの処理を止めたり上書きしたりしないようにするところに特に苦労しました。最初は問題が起きるたびに個別に修正していましたが、原因を追ううちに、GameObjectの構造やスクリプトの役割、処理を実行するタイミングそのものを見直すことが大切だと学びました。",
+    cases:[
+      {no:"01", title:"NPCの非表示処理とシステム停止",
+       problem:"夜間にNPCを非表示にする際、NPC本体のGameObjectを非アクティブにすると、付いているスクリプトの処理まで止まってしまい、翌朝の行動や時間に応じた処理に影響が出ていました。",
+       solution:"NPC本体は有効なまま残し、モデルなど見た目用のGameObjectを子オブジェクトに分けて、そちらだけをON・OFFする構造に変更しました。",
+       ideaResult:"「見た目の制御」と「NPCの行動管理」を分けて考えるようにしました。これにより、NPCを画面上で非表示にしても、内部の処理は止まらずに続く構造になりました。"},
+      {no:"03", title:"睡眠終了後の瞬間移動・行動遷移",
+       problem:"朝に睡眠が終わったあと、NPCが作業場所へ瞬間移動したり、帰宅中にIdle状態のまま移動したりする問題が起きていました。",
+       solution:"睡眠・帰宅・翌朝の行動開始という状態遷移と、移動先を設定するタイミングを見直しました。目的地のTransformを正しく参照するようにし、移動処理と状態の切り替えを調整しました。",
+       ideaResult:"NPCの状態の変更と目的地の更新をセットで意識し、行動を始めるときに移動先が正しく設定されているかを確認しながら調整しました。これにより、睡眠から起きたあとの瞬間移動や、帰宅中にIdle状態のまま移動する動きを改善しました。"},
+      {no:"04", title:"複数の行動スクリプトによる処理の競合",
+       problem:"移動・作業・帰宅・睡眠などを別々のスクリプトで管理していたため、移動の指示や状態の切り替えがぶつかり合い、NPCが意図しない動きをすることがありました。",
+       solution:"NPCPatrolを中心に行動管理を整理し、NavMeshAgentによる移動と各行動状態の切り替えをまとめて管理する構成に見直しました。",
+       ideaResult:"各スクリプトがそれぞれNPCを動かすのではなく、NPCの「現在の状態」を基準に動作を決めるようにしました。これにより、処理の重複や競合が減り、不具合の原因も追いやすい構造になりました。"},
+      {no:"07", title:"NPC本体と頭上アイコンのクリック判定の重複",
+       problem:"NPC本体をクリックするとNPCViewerを表示する仕様にしたところ、頭上のサブクエストアイコンをクリックしたときにも、NPC本体の選択処理が反応してしまいました。",
+       solution:"Raycastでクリックした位置のColliderを判定し、サブクエストアイコンがクリックされた場合はNPCViewerの処理を行わないようにしました。あわせて、アイコン専用のSubQuestIconClickを実装しました。",
+       ideaResult:"NPC本体と頭上アイコンの操作を分け、クリックした対象によって実行する処理を切り替えるようにしました。これにより、1つのNPCの上で複数の操作が共存できるようになりました。"}
+    ],
+    minorCases:[
+      {no:"02", title:"疲労による帰宅と行動の中断",
+       problem:"疲労度が上限に達すると、作業中に急に帰宅へ切り替わる不自然な動きになっていました。",
+       fix:"帰宅フラグを設定し、今の行動を終えたタイミングで帰宅するように調整しました。"},
+      {no:"05", title:"帰宅先の座標がずれる問題",
+       problem:"帰宅先が家の位置とずれてしまう問題がありました。",
+       fix:"建物のTransformを基準にhome.positionを参照して帰宅先を設定し、建物の配置を基準に移動を管理するよう修正しました。"},
+      {no:"06", title:"疲労アイコンとサブクエストアイコンの干渉",
+       problem:"疲労度の表示とサブクエスト発生の表示が同じGameObjectを操作していたため、表示状態が上書きされていました。",
+       fix:"アイコンの制御を分け、クエストの発生状態に応じてSetQuestAvailable()で表示を管理する構成にしました。"}
     ],
     platform:"PC", team:"チーム制作",
     points:[
@@ -581,6 +679,12 @@ const WORKS = [
       "足場を踏むと足場のマスが出現する機能を実装しました。",
       "ゲーム全体の効果音とBGMを追加しました。"
     ],
+    struggle:"大砲でプレイヤーを飛ばす仕組みは、ほかのギミックやステージとの組み合わせで挙動が変わるため、調整に苦労しました。",
+    struggles:[
+      "大砲の発射方向や、飛んでいくときの挙動の調整",
+      "飛んだプレイヤーとステージのオブジェクトの当たり判定",
+      "ギミック同士の連携や、ゲームの進行に合わせた動作の調整"
+    ],
     platform:"PC（Windows）", team:"チーム制作",
     points:[
       {title:"プレイヤーとクリエイター", text:"ふたりが別々の役割を受け持ち、それぞれの視点から脱出の手がかりを探す。"},
@@ -598,6 +702,20 @@ const WORKS = [
     symbol:"★", color:"#e0a10b",
     title:"Bubble", genre:"2D", year:"", team:"個人制作",
     tools:"", role:"", period:"",
+    roleDetail:[
+      "左右移動・ジャンプ・空中での操作に加えて、ジェットパックでの上昇やダッシュなど、プレイヤーの操作を実装しました。",
+      "水鉄砲をチャージして泡を発射し、敵を泡で包み込むシステムを実装しました。",
+      "プレイヤーを追いかける敵AIと、泡に合わせて敵がふくらむアニメーションを実装しました。",
+      "コンボ・スコアの仕組みと、プレイヤーのダメージ・残機の管理を実装しました。"
+    ],
+    struggle:"Rigidbody2Dを使った物理挙動と、泡まわりの調整に特に苦労しました。",
+    struggles:[
+      "Rigidbody2Dでの移動と、空中での慣性の調整",
+      "泡をチャージしている間にプレイヤーが動いても、泡が正しい位置についてくるようにする処理",
+      "泡の大きさに応じた、敵を閉じ込めておく時間や倒せる条件の調整",
+      "敵がプレイヤーを追いかける方向と、向きの切り替えを安定させること",
+      "プレイヤーと敵がぶつかったときに、不自然な物理挙動が起きないようにする調整"
+    ],
     desc:"ここに作品の説明が入ります。",
     image:"", links:[{label:"ダウンロード", url:"#"}]
   },
@@ -617,9 +735,22 @@ const WORKS = [
   },
   /* ▼ 開発中（status:"開発中" を消すと完成扱いになります） */
   {
-    symbol:"♠", color:"#3a9a5b",
+    symbol:"蟲", color:"#e11c2d",
+    icon:"images/sym-kodoku.png",
     title:"蟲毒", genre:"ホラーアクション", year:"",
     tools:"Unity / C#", role:"全敵モブ（アニメーション・プログラム）", period:"",
+    roleDetail:[
+      "敵・NPCキャラクターのAIを担当し、アニメーションからプログラムまでを実装しました。",
+      "NavMeshAgentを使い、敵がプレイヤーを追いかける移動・追跡処理を実装しました。",
+      "状況に応じて敵の行動を切り替える制御を実装しました。",
+      "ステージのギミックを実装しました。"
+    ],
+    struggle:"敵やNPCが、プレイヤーやステージの状況に応じて適切に動くようにするAIの制御に苦労しました。",
+    struggles:[
+      "状況に合わせて、敵やNPCが適切に移動するためのAI制御",
+      "プレイヤーやステージの状況に合わせた行動の処理",
+      "ギミックとゲームの進行の連携"
+    ],
     catch:"脱出のはずが、生き残りをかけた“蟲毒”へ。",
     about:"閉ざされた館からの脱出を目指すホラーゲーム。探索と謎解きで先へ進むが、物語の転換点で館の正体が明らかになり、ゲームの目的が大きく変わる。テーマは古代中国の呪術「蟲毒」。",
     platform:"PC", team:"チーム制作",
@@ -695,9 +826,10 @@ WORKS.forEach((w,i)=>{
     </div>`;
   b.addEventListener("click", ()=>{
     if(spinning) return;
-    // 選んだら、リールと詳細が見える位置まで自動でスクロール
-    const narrow = innerWidth <= 860;
-    scrollToEl(narrow ? "reelCol" : "playRow");
+    // すでに選ばれている作品なら、回さずにそのまま詳細画面を開く
+    if(i === current){ openModal(i); return; }
+    // 選んだら、リールのバーが見える位置まで自動でスクロール
+    scrollToEl("reelBar");
     // スクロールが終わってからリールを回す（止まる瞬間が見えるように）
     // 止まったら詳細画面を開く
     setTimeout(()=>spin(i, true, ()=>openModal(i)), reduce ? 0 : 450);
@@ -724,7 +856,7 @@ function cellH(){ return strips[0].firstElementChild.offsetHeight; }
 function place(i, pos, dur=0, ease="ease"){
   const s = strips[i];
   s.style.transition = dur ? `transform ${dur}s ${ease}` : "none";
-  s.style.transform  = `translateY(${-(pos-1)*cellH()}px)`;
+  s.style.transform  = `translateY(${-pos*cellH()}px)`;   // 1コマ表示
 }
 function normalize(){ strips.forEach((_,i)=>place(i, BASE*len + current)); }
 normalize();
@@ -821,6 +953,8 @@ function render(animate){
   }
 }
 
+const openCurrent = ()=>openModal(current);   // 止まっている作品の詳細画面を開く
+
 /* ===== レバー ===== */
 const lever = document.getElementById("lever");
 const knob  = document.getElementById("knob");
@@ -857,11 +991,19 @@ knob.addEventListener("pointerup", ()=>{
 
 /* ===== ボタン・キー操作 ===== */
 document.getElementById("spinBtn").addEventListener("click", ()=>pullLever());
+const reelsWin = document.getElementById("reelsWin");
+reelsWin.addEventListener("click", ()=>{ if(!spinning) openCurrent(); });
+reelsWin.addEventListener("keydown", e=>{ if(e.key==="Enter" && !spinning) openCurrent(); });
+// レバーをリールのバーの高さにそろえる
+function placeLever(){ lever.style.top = (document.getElementById("reelBar").offsetTop - 40) + "px"; }
+placeLever(); addEventListener("resize", placeLever);
 document.getElementById("prevBtn").addEventListener("click", ()=>step(-1));
 document.getElementById("nextBtn").addEventListener("click", ()=>step(1));
 addEventListener("keydown", e=>{
   if(!document.getElementById("modal").hidden){
     if(e.key==="Escape"){ if(!lightbox.hidden) closeLightbox(); else closeModal(); }
+    if(lightbox.hidden && e.key==="ArrowLeft")  switchModal(-1);
+    if(lightbox.hidden && e.key==="ArrowRight") switchModal(1);
     return;
   }
   if(e.target.closest("button,a,input,textarea")) return;
@@ -928,6 +1070,25 @@ function playYouTube(btn){
   btn.replaceWith(box);
 }
 
+// 「開発での課題と解決」（問題・解決方法・工夫・結果）
+function casesHTML(w){
+  const main = (w.cases||[]).map(c=>`
+    <article class="case">
+      <div class="case-head"><span class="num">${esc(c.no)}</span><h4>${esc(c.title)}</h4></div>
+      <dl>
+        ${[["problem","問題"],["solution","解決方法"],["ideaResult","工夫と結果"]]
+          .filter(([k])=>c[k]).map(([k,l])=>`<dt class="k-${k}">${l}</dt><dd class="k-${k}">${esc(c[k])}</dd>`).join("")}
+      </dl>
+    </article>`).join("");
+  const minor = (w.minorCases||[]).map(c=>`
+    <div><b><span>${esc(c.no)}</span>${esc(c.title)}</b>
+      <p><em>問題</em>${esc(c.problem)}</p><p><em>対応</em>${esc(c.fix)}</p></div>`).join("");
+  if(!main && !minor) return "";
+  return (w.casesIntro ? `<p class="cases-intro">${esc(w.casesIntro)}</p>` : "")
+    + main
+    + (minor ? `<p class="minor-title">そのほかに対応した課題</p><div class="minor">${minor}</div>` : "");
+}
+
 function openModal(i){
   const w = WORKS[i];
   const gold = w.color.toLowerCase()==="#1b1112" ? "var(--gold)" : w.color;
@@ -968,17 +1129,30 @@ function openModal(i){
     sec("どんなゲーム？", about ? `<p class="about">${esc(about)}</p>` : "") +
     sec("作品データ", data ? `<dl class="data-grid">${data}</dl>` : "") +
     sec("担当したところ", (w.roleDetail||[]).length ? `<ul class="role-list">${w.roleDetail.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>` : "") +
+    sec("苦労した点", (w.struggle || (w.struggles||[]).length)
+      ? `<div class="struggle">${w.struggle ? `<p>${esc(w.struggle)}</p>` : ""}${(w.struggles||[]).length ? `<ul>${w.struggles.map(t=>`<li>${esc(t)}</li>`).join("")}</ul>` : ""}</div>` : "") +
+    sec("開発での課題と解決", casesHTML(w)) +
     sec("見どころ", points ? `<div class="points">${points}</div>` : "") +
     sec("ゲーム画面", (video || shotsHTML) ? video + (shotsHTML ? `<div class="shots">${shotsHTML}</div>` : "") : "") +
     (links ? `<div class="sheet-actions">${links}</div>` : "");
 
-  lastFocus = document.activeElement;
+  if(modal.hidden) lastFocus = document.activeElement;
   modal.hidden = false;
   modal.scrollTop = 0;
   modal.classList.remove("open"); void modal.offsetWidth; modal.classList.add("open");
   document.body.classList.add("modal-open");
   document.getElementById("closeBtn").focus();
 }
+function switchModal(d){
+  if(spinning) return;
+  current = (current + d + len) % len;
+  normalize();      // リールの出目もその作品に
+  render(false);    // SELECTED の欄もその作品に
+  openModal(current);
+}
+document.getElementById("mPrev").addEventListener("click", ()=>switchModal(-1));
+document.getElementById("mNext").addEventListener("click", ()=>switchModal(1));
+
 function closeModal(){
   modal.hidden = true;
   document.getElementById("mBody").innerHTML = "";   // 再生中の動画を止める
